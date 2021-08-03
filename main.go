@@ -12,14 +12,16 @@ type Page struct {
 	Body  []byte
 }
 
-var templates = template.Must(template.ParseFiles("index.html"))
-
 func main() {
 	http.HandleFunc("/", rootHandler)
 	log.Fatal(http.ListenAndServe(":9000", nil))
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
+	// city := r.FormValue("city")
+	// if strings.Compare("", city) != 0 {
+
+	// }
 	p, err := loadPage("index")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -29,10 +31,11 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
-	err := templates.ExecuteTemplate(w, tmpl+".html", p)
+	t, err := template.ParseFiles((tmpl+".html"))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+	t.Execute(w, p)
 }
 
 func loadPage(title string) (*Page, error) {
