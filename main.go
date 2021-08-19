@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"text/template"
+
+	"github.com/goLocal_db_manag"
 )
 
 type Page struct {
@@ -28,6 +30,9 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	renderTemplate(w, "index", p)
+
+	// Conecting to database
+	goLocal_db_manag.ConnectDB()
 }
 
 func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
