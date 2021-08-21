@@ -8,9 +8,91 @@
   </head>
   <body>
     <h1>Welcome to Go Local!!</h1>
-    <form action="http://localhost:9000/" methos="POST">
-      <input type="text" name="city" />
+    <form>
+      <input type="text" name="zipCode" placeholder="Zip Code" />
       <input type="submit" value="Submit" />
     </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      document.querySelector("form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        let config = {
+          method: "get",
+          url: `http://localhost:8080/restaurants/${
+            document.querySelector("input").value
+          }`,
+        };
+        axios(config)
+          .then(function (response) {
+            // handle success
+            console.log(response);
+          })
+          .catch(function (error) {
+            // handle error
+            console.log(error);
+          })
+          .then(function () {
+            console.log("nothing happened");
+          });
+      });
+    </script>
+
+    <!-- <script>
+      window.addEventListener("load", (event) => {
+        console.log(document.querySelector("input[name='zipCode']"));
+        postalCodeLookup(document.querySelector("input[name='zipCode']"));
+      });
+      function postalCodeLookup(input) {
+        var head = document.getElementsByTagName("head")[0],
+          script = document.createElement("script");
+        script.src = "//maps.googleapis.com/maps/api/js?sensor=false";
+        head.appendChild(script);
+        script.onload = function () {
+          if (navigator.geolocation) {
+            var a = input,
+              fallback = setTimeout(function () {
+                fail("10 seconds expired");
+              }, 10000);
+
+            navigator.geolocation.getCurrentPosition(
+              function (pos) {
+                clearTimeout(fallback);
+                var point = new google.maps.LatLng(
+                  pos.coords.latitude,
+                  pos.coords.longitude
+                );
+                new google.maps.Geocoder().geocode(
+                  { latLng: point },
+                  function (res, status) {
+                    if (
+                      status == google.maps.GeocoderStatus.OK &&
+                      typeof res[0] !== "undefined"
+                    ) {
+                      var zip =
+                        res[0].formatted_address.match(/,\s\w{2}\s(\d{5})/);
+                      if (zip) {
+                        a.value = zip[1];
+                      } else fail("Unable to look-up postal code");
+                    } else {
+                      fail("Unable to look-up geolocation");
+                    }
+                  }
+                );
+              },
+              function (err) {
+                fail(err.message);
+              }
+            );
+          } else {
+            alert("Unable to find your location.");
+          }
+          function fail(err) {
+            console.log("err", err);
+            a.value("Try Again.");
+          }
+        };
+      }
+    </script> -->
   </body>
 </html>
